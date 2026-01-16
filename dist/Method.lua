@@ -30,24 +30,24 @@ local Memoize = require(script.Parent)
 	return Class
 	```
 ]]
-local function memoizeMethod(options)
+local function memoizeMethod (options)
 	options = options or {}
 
 	-- Per-class storage
-	local instanceMap = setmetatable({}, { __mode = "k" })
+	local instanceMap = setmetatable({}, { __mode = 'k' })
 
-	return function(classTable, methodName)
+	return function (classTable, methodName)
 		local original = classTable[methodName]
-		if type(original) ~= "function" then
-			error(("The decorated value '%s' must be a function"):format(methodName))
+		if type(original) ~= 'function' then
+			error(('The decorated value \'%s\' must be a function'):format(methodName))
 		end
 
 		-- Replace method with a getter-like wrapper
-		classTable[methodName] = function(self, ...)
+		classTable[methodName] = function (self, ...)
 			-- Lazily memoize per-instance
 			local memoizedForInstance = instanceMap[self]
 			if not memoizedForInstance then
-				memoizedForInstance = Memoize.memoize(function(...)
+				memoizedForInstance = Memoize.memoize(function (...)
 					return original(self, ...)
 				end, options)
 

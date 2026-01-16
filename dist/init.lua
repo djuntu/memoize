@@ -1,7 +1,7 @@
 -- Memoize caches inputs on functions and reuses the output instead of recomputing the function's result.
 
 -- Roblox equivalent of Date.now()
-local function now()
+local function now ()
 	return os.clock() * 1000
 end
 
@@ -42,11 +42,9 @@ export type Options<Fn, CacheKey> = {
 	@param key: any
 	@returns CacheItem<V>?
 ]]
-local function getValidCacheItem(cache, key)
+local function getValidCacheItem (cache, key)
 	local item = cache:get(key)
-	if not item then
-		return nil
-	end
+	if not item then return nil end
 
 	if item.maxAge <= now() then
 		cache:delete(key)
@@ -64,27 +62,27 @@ end
 	@private
 	@returns CacheLike
 ]]
-local function defaultCache()
+local function defaultCache ()
 	local store = {}
 	local cache = {}
 
-	function cache:has(key)
+	function cache:has (key)
 		return store[key] ~= nil
 	end
 
-	function cache:get(key)
+	function cache:get (key)
 		return store[key]
 	end
 
-	function cache:set(key, value)
+	function cache:set (key, value)
 		store[key] = value
 	end
 
-	function cache:delete(key)
+	function cache:delete (key)
 		store[key] = nil
 	end
 
-	function cache:clear()
+	function cache:clear ()
 		for k in pairs(store) do
 			store[k] = nil
 		end
@@ -109,12 +107,12 @@ end
 	@param options: Options
 	@returns (...any) -> any
 ]]
-local function memoize(fn: (...any) -> any, options: Options<any, any>?): (...any) -> any
+local function memoize (fn: (...any) -> any, options: Options<any, any>?): (...any) -> any
 	options = options or {}
 
 	-- Retrieve the cache for the Memoization.
 	local cache = options.cache or defaultCache()
-	local cacheKey = options.cacheKey or function(args)
+	local cacheKey = options.cacheKey or function (args)
 		return args[1]
 	end
 
@@ -126,32 +124,26 @@ local function memoize(fn: (...any) -> any, options: Options<any, any>?): (...an
 	end
 
 	local memoized
-	memoized = function(...)
+	memoized = function (...)
 		local args = table.pack(...)
 		local key = cacheKey(args)
 
 		-- Get the cached item if possible and return it or compute and cache with given args.
 		local cached = getValidCacheItem(cache, key)
-		if cached then
-			return cached.data
-		end
+		if cached then return cached.data end
 
 		local result = fn(...)
 
 		local computedMaxAge
-		if typeof(maxAge) == "function" then
+		if typeof(maxAge) == 'function' then
 			computedMaxAge = maxAge(...)
 		else
 			computedMaxAge = maxAge
 		end
 
 		if computedMaxAge ~= nil and computedMaxAge ~= math.huge then
-			if computedMaxAge <= 0 then
-				return result
-			end
-			if computedMaxAge > MAX_TIMEOUT_VALUE then
-				error("maxAge cannot exceed " .. MAX_TIMEOUT_VALUE)
-			end
+			if computedMaxAge <= 0 then return result end
+			if computedMaxAge > MAX_TIMEOUT_VALUE then error('maxAge cannot exceed ' .. MAX_TIMEOUT_VALUE) end
 		end
 
 		local expires = (computedMaxAge == nil or computedMaxAge == math.huge) and math.huge or (now() + computedMaxAge)
@@ -165,7 +157,7 @@ local function memoize(fn: (...any) -> any, options: Options<any, any>?): (...an
 		-- The timer is set as a promise that cached values will expire in given time rather than based on recalling of the
 		-- memoized function.
 		if computedMaxAge ~= nil and computedMaxAge ~= math.huge then
-			local timer = task.delay(computedMaxAge / 1000, function()
+			local timer = task.delay(computedMaxAge / 1000, function ()
 				cache:delete(key)
 			end)
 
@@ -195,15 +187,11 @@ end
 	@param fn: Function(Memoized)
 	@returns void
 ]]
-local function memoizeClear(fn)
+local function memoizeClear (fn)
 	local cache = cacheStore[fn]
-	if not cache then
-		error("Cannot clear a function that was not memoized")
-	end
+	if not cache then error('Cannot clear a function that was not memoized') end
 
-	if not cache.clear then
-		error("Cache does not support clear()")
-	end
+	if not cache.clear then error('Cache does not support clear()') end
 
 	cache:clear()
 	if cacheTimerStore[fn] and next(cacheTimerStore[fn]) then
@@ -223,16 +211,12 @@ end
 	@param args: tuple<any>
 	@returns boolean
 ]]
-local function memoizeIsCached(fn, ...)
+local function memoizeIsCached (fn, ...)
 	local cacheKey = cacheKeyStore[fn]
-	if not cacheKey then
-		return false
-	end
+	if not cacheKey then return false end
 
 	local cache = cacheStore[fn]
-	if not cache then
-		return false
-	end
+	if not cache then return false end
 
 	local key = cacheKey(table.pack(...))
 	local item = getValidCacheItem(cache, key)
