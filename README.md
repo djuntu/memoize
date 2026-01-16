@@ -29,7 +29,8 @@ This is considered a **cheap** function as we have:
 - Fixed inputs\*.
 - Working with small, practical numbers far under any straining values.
 - Performing a simple, arithmetic mathematical function.
-  _\*fixed inputs itself does not confirm a cheap function, however in our case we can confirm the function is cheap because our fixed inputs are small integers._
+
+_\*fixed inputs itself does not confirm a cheap function, however in our case we can confirm the function is cheap because our fixed inputs are small integers._
 
 **An example of an expensive function**
 
