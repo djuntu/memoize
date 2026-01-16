@@ -166,7 +166,7 @@ print(memoizedFunction(2, 4))
 <h2>Classes and Memoization</h2>
 Memoization with classes can seem daunting at first, but this package aims to simpify it as much as possible by using a **decorator-like approach**.
 
-- Due to Roblox's runtime, we cannot put decorators above method, so Memoize advises you put them directly below the method.
+- Due to Roblox's runtime, we cannot put decorators above methods, so Memoize advises you put them directly below the method.
 
 ```lua
 local memoizeMethod = require([path.to.memoize].Method)
