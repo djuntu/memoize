@@ -1,0 +1,11 @@
+[package]
+name = "djuntu/memoize"
+authors = "Djuntu <>"
+description = "Luau integration of memoization which mimics TypeScript package."
+license = "MIT"
+version = "0.1.0"
+registry = "https://github.com/UpliftGames/wally-index"
+realm = "shared"
+include = ["dist", "default.project.json", "LICENSE"]
+
+[dependencies]

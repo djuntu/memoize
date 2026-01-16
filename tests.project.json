@@ -1,0 +1,12 @@
+{
+	"name": "memoize-test",
+	"tree": {
+		"$className": "DataModel",
+		"ReplicatedStorage": {
+			"$className": "ReplicatedStorage",
+			"Memoize": {
+				"$path": "dist"
+			}
+		}
+	}
+}
